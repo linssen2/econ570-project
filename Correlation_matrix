@@ -1,0 +1,30 @@
+from pandas_datareader.data import DataReader
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime
+
+# Series mapping
+series_ids = {
+    'GDPC1': 'Real GDP',
+    'GPDIC1': 'Private Investment',
+    'W068RC1A027NBEA': 'Govt Spending (Nondefense)',
+    'PCEC96': 'Real Consumption',
+    'UNRATE': 'Unemployment Rate',
+    'NETEXP': 'Net Exports'
+}
+
+# Load data
+start = datetime(1990, 1, 1)
+end = datetime.today()
+data = pd.DataFrame()
+for code, name in series_ids.items():
+    df = DataReader(code, 'fred', start, end)
+    data[name] = df[code]
+
+# Correlation heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(data.corr(), annot=True, cmap='coolwarm_r')
+plt.title('Correlation Matrix')
+plt.tight_layout()
+plt.savefig("correlation_matrix.png", dpi=300)
